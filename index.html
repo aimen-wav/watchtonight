@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#F9F5F8">
+<title>Watch Tonight — three taps to tonight's pick</title>
+<meta name="description" content="Tell us the mood and we'll find tonight's watch before your dinner gets cold.">
+<!-- Open Graph / WhatsApp / iMessage -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://watchtonight.aimen.me">
+<meta property="og:title" content="Watch Tonight — three taps to tonight's pick">
+<meta property="og:description" content="Tell us the mood and we'll find tonight's watch before your dinner gets cold.">
+<meta property="og:image" content="https://watchtonight.aimen.me/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Watch Tonight — three taps to tonight's pick">
+<meta name="twitter:description" content="Tell us the mood and we'll find tonight's watch before your dinner gets cold.">
+<meta name="twitter:image" content="https://watchtonight.aimen.me/preview.png">
+<style>
+  :root{
+    --bg:#F9F5F8;--bg-2:#EFE6EF;--ink:#1E1720;--ink-soft:#675869;--ink-faint:#A592A4;
+    --card:#FFFFFF;--line:rgba(24,16,28,.08);--accent:#D63672;--accent-deep:#A82859;--dusk:#3B52C8;
+    --shadow:0 1px 2px rgba(24,16,28,.04),0 8px 24px rgba(24,16,28,.07),0 24px 60px rgba(24,16,28,.06);
+    --shadow-lg:0 2px 6px rgba(24,16,28,.06),0 18px 50px rgba(24,16,28,.14),0 40px 90px rgba(24,16,28,.10);
+    --r:22px;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+    --serif:ui-serif,"New York","Iowan Old Style",Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#120E18;--bg-2:#1A1420;--ink:#F0ECF4;--ink-soft:#B4A8BC;--ink-faint:#7A6A82;
+      --card:#1E1828;--line:rgba(255,255,255,.07);--accent:#E8407E;--accent-deep:#FF6FA0;--dusk:#6080E8;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.45);
+      --shadow-lg:0 2px 8px rgba(0,0,0,.5),0 24px 60px rgba(0,0,0,.6);
+    }
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  .wrap{max-width:480px;margin:0 auto;min-height:100%;
+    padding:max(28px,env(safe-area-inset-top)) 20px calc(120px + env(safe-area-inset-bottom));position:relative}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 78% -8%, color-mix(in srgb,var(--accent) 16%,transparent), transparent 60%),
+      radial-gradient(700px 480px at 8% 108%, color-mix(in srgb,var(--dusk) 14%,transparent), transparent 62%)}
+  .wrap>*{position:relative;z-index:1}
+
+  .top{margin:6px 2px 22px}
+  .kicker{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--accent-deep);
+    text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:10px}
+  .steam{display:inline-flex;gap:3px;align-items:flex-end;height:13px}
+  .steam i{width:2px;height:9px;border-radius:2px;background:var(--accent);opacity:.5;animation:steam 2.6s ease-in-out infinite}
+  .steam i:nth-child(2){height:12px;animation-delay:.5s}.steam i:nth-child(3){height:8px;animation-delay:1s}
+  @keyframes steam{0%,100%{transform:translateY(1px) scaleY(.9);opacity:.35}50%{transform:translateY(-2px) scaleY(1.1);opacity:.7}}
+  h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.12;letter-spacing:-.02em;margin-bottom:9px}
+  h1 em{font-style:italic;color:var(--accent-deep)}
+  .sub{color:var(--ink-soft);font-size:15.5px;line-height:1.45;max-width:34ch}
+
+  /* ---- spotlight ---- */
+  .spot{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 13px;
+    margin:0 0 24px;box-shadow:0 1px 2px rgba(30,27,23,.04);transition:transform .15s,box-shadow .2s}
+  .spot:active{transform:scale(.985)}
+  .spot-thumb{width:46px;height:62px;border-radius:9px;flex:none;background-size:cover;
+    background-position:center;background-color:var(--bg-2)}
+  .spot-txt{flex:1;min-width:0}
+  .spot-kick{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent-deep);margin-bottom:3px}
+  .spot-title{display:block;font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:-.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .spot-take{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .spot-go{color:var(--ink-faint);font-size:20px;flex:none}
+  .spot.skel{pointer-events:none}
+  .spot .sk{display:block;height:12px;border-radius:6px;
+    background:linear-gradient(90deg,var(--bg-2),var(--line),var(--bg-2));background-size:200% 100%;
+    animation:sh 1.2s linear infinite}
+  .spot .sk1{width:42%;margin-bottom:9px}.spot .sk2{width:74%;height:16px}
+  @keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+  .spot.skel .spot-thumb{background:linear-gradient(90deg,var(--bg-2),var(--line),var(--bg-2));
+    background-size:200% 100%;animation:sh 1.2s linear infinite}
+
+  .group{margin-bottom:24px;animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards}
+  .group:nth-of-type(1){animation-delay:.05s}.group:nth-of-type(2){animation-delay:.12s}.group:nth-of-type(3){animation-delay:.19s}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .label{font-size:13px;font-weight:650;color:var(--ink-soft);letter-spacing:.02em;margin:0 4px 11px;display:block}
+
+  .moods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mood{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:15px;text-align:left;
+    cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .25s,background .2s;
+    box-shadow:0 1px 2px rgba(30,27,23,.03)}
+  .mood .e{font-size:21px;display:block;margin-bottom:7px;line-height:1}
+  .mood .t{display:block;font-size:15px;font-weight:620;letter-spacing:-.01em}
+  .mood .d{display:block;font-size:12.5px;color:var(--ink-faint);margin-top:6px}
+  .mood:active{transform:scale(.965)}
+  .mood[aria-pressed=true]{border-color:transparent;background:var(--accent);color:#fff;
+    box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 42%,transparent);transform:translateY(-1px)}
+  .mood[aria-pressed=true] .d{color:rgba(255,255,255,.78)}
+
+  .seg{display:flex;background:var(--bg-2);border-radius:15px;padding:4px;gap:3px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--ink-soft);font-family:var(--sans);
+    font-size:13.5px;font-weight:600;padding:11px 6px;border-radius:11px;cursor:pointer;
+    transition:color .18s,transform .15s;letter-spacing:-.01em}
+  .seg button:active{transform:scale(.95)}
+  .seg button[aria-pressed=true]{background:var(--card);color:var(--ink);
+    box-shadow:0 1px 2px rgba(30,27,23,.06),0 4px 12px rgba(30,27,23,.08)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);
+    font-size:14px;font-weight:570;padding:10px 15px;border-radius:999px;cursor:pointer;
+    transition:transform .15s,background .18s,border-color .18s,color .18s}
+  .chip:active{transform:scale(.94)}
+  .chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:20;
+    padding:14px 20px calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top,var(--bg) 62%,transparent);backdrop-filter:blur(2px)}
+  .dock-in{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:9px}
+  .go{width:100%;border:0;border-radius:17px;cursor:pointer;background:var(--ink);color:var(--bg);
+    font-family:var(--sans);font-size:17px;font-weight:660;letter-spacing:-.01em;padding:18px;
+    box-shadow:var(--shadow);transition:transform .16s cubic-bezier(.2,.8,.2,1),opacity .2s,background .2s}
+  .go:active{transform:scale(.975)}
+  .go:disabled{opacity:.4;cursor:not-allowed}
+  .go.ready{background:var(--accent);color:#fff;box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 45%,transparent)}
+  .surprise{background:none;border:0;color:var(--ink-soft);font-family:var(--sans);font-size:13.5px;
+    font-weight:560;cursor:pointer;padding:4px;align-self:center}
+  .surprise u{text-decoration-color:var(--ink-faint);text-underline-offset:3px}
+
+  /* ---------- LOADER ---------- */
+  #loader{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;
+    align-items:center;justify-content:center;gap:26px;background:var(--bg);
+    padding:env(safe-area-inset-top) 24px}
+  #loader.on{display:flex;animation:rise .35s ease}
+  .tv-wrap{position:relative;animation:tvfloat 2.4s ease-in-out infinite}
+  @keyframes tvfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  .tv-ant{position:absolute;top:-26px;left:50%;transform:translateX(-50%);
+    width:104px;display:flex;justify-content:space-between;align-items:flex-end}
+  .tv-ant .al{width:3px;height:26px;background:#2C2826;border-radius:2px;
+    transform-origin:bottom center;transform:rotate(-16deg)}
+  .tv-ant .ar{width:3px;height:20px;background:#2C2826;border-radius:2px;
+    transform-origin:bottom center;transform:rotate(22deg)}
+  .tv-body{background:linear-gradient(160deg,#2C2824 0%,#1C1814 65%);
+    border-radius:16px 16px 10px 10px;padding:13px 13px 14px;
+    box-shadow:0 14px 44px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08),
+      inset 0 -1px 0 rgba(0,0,0,.45);width:min(70vw,232px)}
+  .tv-screen{border-radius:7px;overflow:hidden;aspect-ratio:4/3;position:relative;
+    background:#080808;box-shadow:inset 0 0 22px rgba(0,0,0,.85)}
+  .tv-ctrl{display:flex;justify-content:flex-end;align-items:center;gap:7px;padding:9px 3px 2px}
+  .tv-ctrl .knob{width:9px;height:9px;border-radius:50%;background:#363028;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+  .tv-ctrl .slider{width:24px;height:6px;border-radius:3px;background:#363028;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+  .tv-stand{display:flex;justify-content:center;gap:52px}
+  .tv-stand .leg{width:14px;height:10px;background:#181410;border-radius:2px 2px 5px 5px;
+    box-shadow:0 4px 10px rgba(0,0,0,.4)}
+  .tv-screen .snow{position:absolute;inset:-30%;opacity:.5;mix-blend-mode:screen;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    animation:snow .09s steps(3) infinite}
+  @keyframes snow{0%{transform:translate(0,0)}33%{transform:translate(-12px,8px)}66%{transform:translate(10px,-6px)}100%{transform:translate(-6px,4px)}}
+  .tv-screen::after{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.34) 0 2px,transparent 2px 4px),
+      radial-gradient(120% 120% at 50% 50%,transparent 55%,rgba(0,0,0,.55));
+    animation:roll 7s linear infinite}
+  @keyframes roll{from{background-position:0 0,0 0}to{background-position:0 -120px,0 0}}
+  .tv-screen .glow{position:absolute;inset:0;mix-blend-mode:overlay;
+    background:radial-gradient(80% 60% at 50% 40%,color-mix(in srgb,var(--accent) 55%,transparent),transparent 70%);
+    animation:flick 2.4s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:.25}45%{opacity:.55}70%{opacity:.18}}
+  .lcap{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-soft);
+    min-height:22px;text-align:center;transition:opacity .25s}
+
+  /* ---------- RESULT ---------- */
+  .result{display:none}
+  .result.show{display:block;animation:tune .55s cubic-bezier(.2,.7,.2,1)}
+  @keyframes tune{0%{opacity:0;transform:scale(.97);filter:blur(6px)}60%{filter:blur(0)}100%{opacity:1;transform:none}}
+  .back{background:none;border:0;color:var(--ink-soft);font-family:var(--sans);font-size:14px;
+    font-weight:560;cursor:pointer;padding:8px 4px;margin:-4px 0 14px -4px}
+  .verdict{font-family:var(--serif);font-size:15px;color:var(--ink-soft);font-style:italic;margin:0 2px 14px;line-height:1.4}
+  .pick{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-lg);border:1px solid var(--line)}
+  .poster{position:relative;aspect-ratio:16/13;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:22px;color:#fff;overflow:hidden;background-size:cover;background-position:center}
+  .poster::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(0,0,0,.06) 30%,rgba(0,0,0,.62))}
+  .badge-svc{position:absolute;top:18px;left:18px;z-index:2;background:rgba(0,0,0,.38);
+    backdrop-filter:blur(8px);color:#fff;font-size:12px;font-weight:640;padding:7px 12px;
+    border-radius:999px;border:1px solid rgba(255,255,255,.16)}
+  .ptype{position:relative;z-index:2;font-size:12px;font-weight:650;letter-spacing:.12em;
+    text-transform:uppercase;opacity:.85;margin-bottom:8px}
+  .ptitle{position:relative;z-index:2;font-family:var(--serif);font-weight:600;font-size:30px;
+    line-height:1.08;letter-spacing:-.015em;text-shadow:0 2px 18px rgba(0,0,0,.45)}
+  .pmeta-row{padding:17px 19px 5px;display:flex;gap:7px;flex-wrap:wrap}
+  .tag{font-size:12.5px;font-weight:560;color:var(--ink-soft);background:var(--bg-2);padding:6px 11px;border-radius:999px}
+  .why{padding:13px 20px 19px;font-size:15.5px;line-height:1.5;color:var(--ink)}
+  .why b{font-weight:640;color:var(--accent-deep)}
+  .actions{display:flex;gap:10px;margin-top:14px}
+  .act{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);
+    font-size:14.5px;font-weight:600;padding:15px;border-radius:15px;cursor:pointer;transition:transform .15s,background .18s}
+  .act:active{transform:scale(.97)}
+  .act.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .more-btn{width:100%;margin-top:11px;background:none;border:0;color:var(--ink-soft);
+    font-family:var(--sans);font-size:13.5px;font-weight:560;cursor:pointer;padding:9px}
+  .more-list{display:none;gap:10px;flex-direction:column;margin-top:11px}
+  .more-list.show{display:flex;animation:rise .35s ease}
+  .alt{display:flex;align-items:center;gap:13px;text-align:left;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;padding:11px;cursor:pointer;transition:transform .15s}
+  .alt:active{transform:scale(.985)}
+  .alt .thumb{width:46px;height:62px;border-radius:8px;flex:none;background-size:cover;background-position:center}
+  .alt .at{display:block;font-size:14.5px;font-weight:620;letter-spacing:-.01em}
+  .alt .as{display:block;font-size:12.5px;color:var(--ink-faint);margin-top:3px}
+  .alt .go-i{margin-left:auto;color:var(--ink-faint);font-size:18px}
+  .seen-btn{width:100%;background:none;border:0;color:var(--ink-faint);font-family:var(--sans);
+    font-size:13px;font-weight:500;cursor:pointer;padding:10px 4px;margin-top:4px;
+    letter-spacing:.01em;transition:color .15s}
+  .seen-btn:active{color:var(--ink-soft)}
+
+  /* ---------- SETTLED (decision made) ---------- */
+  #settled{position:fixed;inset:0;z-index:55;display:none;flex-direction:column;
+    align-items:center;justify-content:center;overflow:hidden;background:var(--bg);
+    padding:max(52px,env(safe-area-inset-top)) 36px calc(90px + env(safe-area-inset-bottom))}
+  #settled.show{display:flex;animation:settleIn .4s ease}
+  @keyframes settleIn{from{opacity:0}to{opacity:1}}
+  .sett-bg{position:absolute;inset:-12%;z-index:0;background-size:cover;background-position:center;
+    filter:blur(40px) saturate(1.4);opacity:.15;pointer-events:none}
+  .sett-scrim{position:absolute;inset:0;z-index:1;background:var(--bg);opacity:.88;pointer-events:none}
+  .sett-body{position:relative;z-index:2;text-align:center;max-width:300px;
+    display:flex;flex-direction:column;align-items:center}
+  .sett-icon{font-size:52px;line-height:1;margin-bottom:24px;
+    animation:iconPop .55s cubic-bezier(.2,.9,.2,1) .08s both,iconBob 2.6s ease-in-out 1s infinite}
+  @keyframes iconPop{from{opacity:0;transform:scale(.35)}to{opacity:1;transform:scale(1)}}
+  @keyframes iconBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .sett-eyebrow{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-soft);
+    margin-bottom:13px;animation:floatUp .48s cubic-bezier(.2,.7,.2,1) .18s both}
+  .sett-title{font-family:var(--serif);font-weight:600;font-size:31px;line-height:1.08;
+    letter-spacing:-.02em;color:var(--ink);margin-bottom:12px;
+    animation:floatUp .48s cubic-bezier(.2,.7,.2,1) .25s both}
+  .sett-hook{font-size:15px;color:var(--ink-soft);line-height:1.5;
+    animation:floatUp .44s cubic-bezier(.2,.7,.2,1) .32s both}
+  .sett-restart{position:absolute;bottom:max(36px,calc(28px + env(safe-area-inset-bottom)));
+    left:50%;transform:translateX(-50%);background:none;border:0;color:var(--ink-faint);
+    font-family:var(--sans);font-size:14px;font-weight:530;cursor:pointer;padding:12px 20px;
+    white-space:nowrap;letter-spacing:.015em;z-index:2;
+    animation:floatUp .4s ease .48s both;transition:color .18s}
+  .sett-restart:active{color:var(--ink)}
+  .footnote{text-align:center;color:var(--ink-faint);font-size:11.5px;margin-top:22px;line-height:1.55;padding:0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="setup">
+    <div class="top">
+      <div class="kicker"><span class="steam"><i></i><i></i><i></i></span> Dinner’s getting cold</div>
+      <h1>Three taps.<br>Tonight, <em>decided</em>.</h1>
+      <p class="sub">Still scrolling while dinner gets cold? Tell us the mood — we’ll find tonight’s pick for you both.</p>
+    </div>
+
+    <div id="spotSkel" class="spot skel">
+      <span class="spot-thumb"></span>
+      <span class="spot-txt"><span class="sk sk1"></span><span class="sk sk2"></span></span>
+    </div>
+    <button id="spotlight" class="spot" hidden>
+      <span class="spot-thumb" id="spotThumb"></span>
+      <span class="spot-txt">
+        <span class="spot-kick">This week</span>
+        <span class="spot-title" id="spotTitle"></span>
+        <span class="spot-take" id="spotTake"></span>
+      </span>
+      <span class="spot-go">›</span>
+    </button>
+
+    <div class="group">
+      <span class="label">What are you both in the mood for?</span>
+      <div class="moods" id="moods"></div>
+    </div>
+    <div class="group">
+      <span class="label">How much time have you got?</span>
+      <div class="seg" id="time"></div>
+    </div>
+    <div class="group">
+      <span class="label">What can you watch on?</span>
+      <div class="chips" id="svcs"></div>
+    </div>
+    <p class="footnote" style="margin-top:6px">Pick streaming services you have.</p>
+  </section>
+
+  <section id="loader">
+    <div class="tv-wrap">
+      <div class="tv-ant"><span class="al"></span><span class="ar"></span></div>
+      <div class="tv-body">
+        <div class="tv-screen"><div class="snow"></div><div class="glow"></div></div>
+        <div class="tv-ctrl"><span class="slider"></span><span class="knob"></span><span class="knob"></span></div>
+      </div>
+      <div class="tv-stand"><span class="leg"></span><span class="leg"></span></div>
+    </div>
+    <div class="lcap" id="lcap">Reading the room…</div>
+  </section>
+
+  <section id="result" class="result">
+    <button class="back" id="back">‹&nbsp; Change the vibe</button>
+    <p class="verdict" id="verdict"></p>
+    <div class="pick" id="pick"></div>
+    <div class="actions">
+      <button class="act" id="another">Not it — show another</button>
+      <button class="act primary" id="settle">That’s the one</button>
+    </div>
+    <button class="more-btn" id="moreBtn">Show 2 more options ▾</button>
+    <div class="more-list" id="moreList"></div>
+    <button class="seen-btn" id="seenBtn">Seen this one — skip it for tonight →</button>
+    <p class="footnote" id="foot">Availability is live for the UK and can still shift — open it in the app to be sure.</p>
+    <p class="footnote" style="margin-top:6px">Data provided by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-decoration-color:currentColor;text-underline-offset:2px">TMDB</a>. Not endorsed or certified by TMDB.</p>
+  </section>
+
+  <div class="dock" id="dock">
+    <div class="dock-in">
+      <button class="go" id="go" disabled>Pick something →</button>
+      <button class="surprise" id="surprise">or just <u>surprise us</u></button>
+    </div>
+  </div>
+
+  <div id="settled" hidden>
+    <div class="sett-bg" id="settBg"></div>
+    <div class="sett-scrim"></div>
+    <div class="sett-body">
+      <span class="sett-icon">🍿</span>
+      <p class="sett-eyebrow">Enjoy tonight</p>
+      <h2 class="sett-title" id="settTitle"></h2>
+      <p class="sett-hook" id="settHook"></p>
+    </div>
+    <button class="sett-restart" id="settRestart">Start fresh →</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     TMDB SETUP — paste your free v3 API key between the quotes.
+     https://www.themoviedb.org/settings/api  (the short "API Key
+     (v3 auth)", NOT the long v4 Read Access Token).
+     No key? The app still runs on built-in picks.
+     ============================================================ */
+  const TMDB_KEY = "286f439157e1c64a21e9e1c0e6434e85";
+
+  const TMDB="https://api.themoviedb.org/3";
+  const IMG="https://image.tmdb.org/t/p/w500";
+  const REGION="GB";
+  const tmdbOn=()=>!!TMDB_KEY;
+
+  const MOODS=[
+    {k:"switch",e:"🛋️",t:"Switch off",d:"easy, no homework"},
+    {k:"laugh", e:"😄",t:"Make us laugh",d:"light & funny"},
+    {k:"grip",  e:"🎯",t:"Grip us",d:"hooked by ep one"},
+    {k:"moving",e:"🥹",t:"Something moving",d:"feel it together"},
+    {k:"cosy",  e:"🔥",t:"Cosy night",d:"warm & comforting"},
+    {k:"edge",  e:"😨",t:"On the edge",d:"tense & dark"}
+  ];
+  const TIMES=[{k:"quick",t:"~45 min"},{k:"mid",t:"~90 min"},{k:"film",t:"A film"},{k:"series",t:"A series"}];
+  const ACCEPT={quick:["quick"],mid:["mid","quick"],film:["film","mid"],series:["series","quick"]};
+  const SERVICES=["Netflix","Prime Video","Disney+","Apple TV+","Max / HBO","Paramount+","Hulu"];
+  const PROV_FALLBACK={"Netflix":[8],"Prime Video":[9,119],"Disney+":[337],
+    "Apple TV+":[350,2],"Max / HBO":[39,29],"Paramount+":[531],"Hulu":[]};
+  const PROV_ALIAS={
+    "Netflix":/netflix/i,"Prime Video":/amazon prime|prime video/i,"Disney+":/disney/i,
+    "Apple TV+":/apple tv/i,"Max / HBO":/^now|sky|hbo|^max/i,"Paramount+":/paramount/i,"Hulu":/hulu/i
+  };
+
+  function moodQuery(mood, media){
+    const tv=media==="tv";
+    const G={
+      switch: tv?[10759,10765,35,10751]:[28,878,12,35,10751],
+      laugh:  [35],
+      grip:   tv?[80,9648,18]:[53,80,9648],
+      moving: tv?[18,10751]:[18,10749],
+      cosy:   tv?[35,10751,18]:[35,10749,10751,18,16],
+      edge:   tv?[9648,80,10765]:[27,53]
+    };
+    const q={};
+    if(mood && G[mood]) q.with_genres=G[mood].join("|");
+    if(mood==="grip"){ q.sort_by="popularity.desc"; q["vote_average.gte"]=tv?6.6:6.4; q["vote_count.gte"]=tv?120:150; }
+    else if(mood==="moving"){ q.sort_by="vote_average.desc"; q["vote_count.gte"]=tv?150:400; q["vote_average.gte"]=7; }
+    else if(mood==="cosy"){ q.sort_by="vote_average.desc"; q["vote_count.gte"]=tv?300:1200; q["vote_average.gte"]=tv?7.6:7.4;
+      q.without_genres=tv?"10768":"27,10752,53"; }
+    else { q.sort_by="popularity.desc"; q["vote_count.gte"]=tv?60:120; }
+    return q;
+  }
+  function mediaFor(t){ return (t==="quick"||t==="series")?"tv":"movie"; }
+  function runtimeFor(t){
+    if(t==="mid")  return {"with_runtime.gte":70,"with_runtime.lte":125};
+    if(t==="film") return {"with_runtime.gte":115};
+    if(t==="quick")return {"with_runtime.lte":50};
+    return {};
+  }
+  /* freshness: keep recs current. cosy is exempt by design (comfort
+     canon ages well); acclaim-led moods get a gentler floor. */
+  function recencyFloor(mood, media){
+    if(!mood || mood==="cosy") return {};
+    const now=new Date().getFullYear();
+    const back=(mood==="grip"||mood==="moving")?12:7;
+    const d=(now-back)+"-01-01";
+    return media==="tv"?{"first_air_date.gte":d}:{"primary_release_date.gte":d};
+  }
+
+  const T=[
+    {n:"Stranger Things",y:2016,ty:"series",L:["series"],s:["Netflix"],m:["grip","edge","switch"],h:"a small-town mystery you’ll both want to keep going on"},
+    {n:"The Night Agent",y:2023,ty:"series",L:["series"],s:["Netflix"],m:["grip"],h:"a fast conspiracy thriller that makes ‘one more’ inevitable"},
+    {n:"Beef",y:2023,ty:"series",L:["quick","series"],s:["Netflix"],m:["grip","moving"],h:"half-hour episodes, sharp and strangely tender"},
+    {n:"The Queen’s Gambit",y:2020,ty:"series",L:["series"],s:["Netflix"],m:["moving","grip"],h:"gorgeous, propulsive, easy to fall into as a pair"},
+    {n:"Glass Onion",y:2022,ty:"film",L:["film","mid"],s:["Netflix"],m:["grip","laugh"],h:"a witty whodunit — fun to guess out loud together"},
+    {n:"Nimona",y:2023,ty:"film",L:["mid"],s:["Netflix"],m:["laugh","cosy","switch"],h:"bright, warm and zips by in about 90"},
+    {n:"Marriage Story",y:2019,ty:"film",L:["film"],s:["Netflix"],m:["moving"],h:"a beautiful, gut-punch of a film for a quiet night"},
+    {n:"Don’t Look Up",y:2021,ty:"film",L:["film","mid"],s:["Netflix"],m:["laugh","switch"],h:"loud, funny, no concentration required"},
+    {n:"Wednesday",y:2022,ty:"series",L:["series"],s:["Netflix"],m:["edge","laugh","switch"],h:"spooky-lite and very easy to binge side by side"},
+    {n:"Fleabag",y:2016,ty:"series",L:["quick","series"],s:["Prime Video"],m:["laugh","moving"],h:"tiny episodes, devastating and hilarious at once"},
+    {n:"The Boys",y:2019,ty:"series",L:["series"],s:["Prime Video"],m:["edge","grip"],h:"loud, bloody, impossible to stop after one"},
+    {n:"Mr. & Mrs. Smith",y:2024,ty:"series",L:["series","quick"],s:["Prime Video"],m:["grip","laugh"],h:"a spy-couple romp — fitting, given the company"},
+    {n:"Reacher",y:2022,ty:"series",L:["series"],s:["Prime Video"],m:["grip","switch"],h:"big dumb satisfying — brain fully off"},
+    {n:"The Marvelous Mrs. Maisel",y:2017,ty:"series",L:["series"],s:["Prime Video"],m:["laugh","cosy"],h:"fizzy, fast-talking and lovely to settle into"},
+    {n:"Saltburn",y:2023,ty:"film",L:["film"],s:["Prime Video"],m:["edge"],h:"a gorgeous, unsettling watch you’ll be talking about"},
+    {n:"Air",y:2023,ty:"film",L:["film","mid"],s:["Prime Video"],m:["switch","laugh"],h:"breezy, feel-good, no homework"},
+    {n:"Ted Lasso",y:2020,ty:"series",L:["quick","series"],s:["Apple TV+"],m:["cosy","laugh","moving"],h:"the warmest possible thing to put on together"},
+    {n:"Severance",y:2022,ty:"series",L:["series"],s:["Apple TV+"],m:["grip","edge"],h:"strange, hypnotic, you’ll need to discuss it after"},
+    {n:"Slow Horses",y:2022,ty:"series",L:["series","quick"],s:["Apple TV+"],m:["grip","laugh"],h:"sharp spy thriller with a wicked sense of humour"},
+    {n:"Shrinking",y:2023,ty:"series",L:["quick","series"],s:["Apple TV+"],m:["laugh","moving"],h:"half-hour, funny and quietly moving"},
+    {n:"Bad Sisters",y:2022,ty:"series",L:["series"],s:["Apple TV+"],m:["grip","laugh"],h:"a darkly funny thriller built for ‘just one more’"},
+    {n:"CODA",y:2021,ty:"film",L:["film","mid"],s:["Apple TV+"],m:["moving","cosy"],h:"a proper happy-cry of a film"},
+    {n:"The Last of Us",y:2023,ty:"series",L:["series"],s:["Max / HBO"],m:["grip","moving","edge"],h:"prestige and devastating — hold hands"},
+    {n:"The White Lotus",y:2021,ty:"series",L:["series"],s:["Max / HBO"],m:["grip","laugh"],h:"beautiful, bitchy, addictive holiday horror"},
+    {n:"Succession",y:2018,ty:"series",L:["series"],s:["Max / HBO"],m:["grip","laugh"],h:"savage and brilliant — a real two-person sport"},
+    {n:"Barbie",y:2023,ty:"film",L:["film","mid"],s:["Max / HBO"],m:["laugh","cosy","switch"],h:"funny, bright and easy on a tired evening"},
+    {n:"Dune",y:2021,ty:"film",L:["film"],s:["Max / HBO"],m:["switch","grip"],h:"a big, immersive screen-filler to disappear into"},
+    {n:"House of the Dragon",y:2022,ty:"series",L:["series"],s:["Max / HBO"],m:["edge","grip"],h:"dragons, scheming, very bingeable"},
+    {n:"Only Murders in the Building",y:2021,ty:"series",L:["quick","series"],s:["Disney+","Hulu"],m:["laugh","cosy","grip"],h:"cosy comfort-mystery in ~35-min bites"},
+    {n:"The Bear",y:2022,ty:"series",L:["quick","series"],s:["Disney+","Hulu"],m:["grip","moving"],h:"tense and tender in half-hour hits"},
+    {n:"Andor",y:2022,ty:"series",L:["series"],s:["Disney+"],m:["grip","switch"],h:"smart, grown-up Star Wars — easy to get lost in"},
+    {n:"Loki",y:2021,ty:"series",L:["series","quick"],s:["Disney+"],m:["switch","grip"],h:"fun, twisty, no prior homework needed"},
+    {n:"Prey",y:2022,ty:"film",L:["film","mid"],s:["Disney+","Hulu"],m:["edge","switch"],h:"lean, tense and over in 90 — great couch thriller"},
+    {n:"Hijack",y:2023,ty:"series",L:["series","quick"],s:["Disney+","Apple TV+"],m:["grip","edge"],h:"real-time tension — you won’t pause it"},
+    {n:"Yellowjackets",y:2021,ty:"series",L:["series"],s:["Paramount+"],m:["edge","grip"],h:"dark, twisty, deeply moreish"},
+    {n:"Top Gun: Maverick",y:2022,ty:"film",L:["film","mid"],s:["Paramount+"],m:["switch","grip"],h:"pure adrenaline, zero thinking required"},
+    {n:"A Quiet Place",y:2018,ty:"film",L:["mid","film"],s:["Paramount+"],m:["edge"],h:"unbearably tense and tight — under 90 min"},
+    {n:"Tulsa King",y:2022,ty:"series",L:["series"],s:["Paramount+"],m:["switch","grip"],h:"easy, watchable, Stallone doing his thing"}
+  ];
+  let CATALOGUE=T;
+  const norm=s=>(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  const HOOKS=new Map(T.map(t=>[norm(t.n),t.h]));
+  const MOOD_HOOK={
+    grip:"gripping — easy to get lost in together",
+    edge:"tense and dark — you won’t want to pause it",
+    laugh:"light and funny, no concentration needed",
+    moving:"a proper feel-it-together watch",
+    cosy:"a warm, well-loved one for a quiet night in",
+    switch:"easy company — brains comfortably off"
+  };
+  const SPOT_FRAMES=["The one everyone’s watching this week.","This week’s word-of-mouth hit.",
+    "Topping the charts in the UK right now.","The one your group chat won’t shut up about."];
+  const weekIdx=()=>Math.floor(Date.now()/6048e5);
+  const spotFrame=()=>SPOT_FRAMES[weekIdx()%SPOT_FRAMES.length];
+
+  const st={mood:null,time:null,svcs:new Set(),queue:[],idx:0,relaxed:false,
+    live:false,page:1,exhausted:false,trendCache:null};
+  const watched=new Set(); // titles marked seen this session — persists across back/forward
+  const $=s=>document.querySelector(s);
+  function hap(){ if(navigator.vibrate) try{navigator.vibrate(8)}catch(e){} }
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+  /* ---------- setup UI ---------- */
+  const moodWrap=$("#moods");
+  MOODS.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="mood";b.setAttribute("aria-pressed","false");
+    b.innerHTML=`<span class="e">${o.e}</span><span class="t">${o.t}</span><span class="d">${o.d}</span>`;
+    b.onclick=()=>{hap();st.mood=o.k;
+      moodWrap.querySelectorAll(".mood").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");refreshGo();};
+    moodWrap.appendChild(b);
+  });
+  const timeWrap=$("#time");
+  TIMES.forEach(o=>{
+    const b=document.createElement("button");
+    b.setAttribute("aria-pressed","false");b.textContent=o.t;
+    b.onclick=()=>{hap();st.time=o.k;
+      timeWrap.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");refreshGo();};
+    timeWrap.appendChild(b);
+  });
+  const svcWrap=$("#svcs");
+  SERVICES.forEach(name=>{
+    const b=document.createElement("button");
+    b.className="chip";b.setAttribute("aria-pressed","false");b.textContent=name;
+    b.onclick=()=>{hap();
+      if(st.svcs.has(name)){st.svcs.delete(name);b.setAttribute("aria-pressed","false");}
+      else{st.svcs.add(name);b.setAttribute("aria-pressed","true");}
+      refreshGo();};
+    svcWrap.appendChild(b);
+  });
+  const goBtn=$("#go");
+  function refreshGo(){
+    const ok=st.svcs.size>0;
+    goBtn.disabled=!ok;
+    goBtn.classList.toggle("ready",!!(st.mood&&st.time&&ok));
+    goBtn.textContent= ok ? "Pick something →" : "Add a service first";
+  }
+
+  /* ---------- TMDB ---------- */
+  let providerCache=null;
+  async function tmdb(path,params){
+    const u=new URL(TMDB+path);
+    u.searchParams.set("api_key",TMDB_KEY);
+    u.searchParams.set("language","en-GB");
+    for(const k in params) u.searchParams.set(k,params[k]);
+    const r=await fetch(u);
+    if(!r.ok) throw new Error("tmdb "+r.status);
+    return r.json();
+  }
+  async function loadProviders(){
+    if(providerCache) return providerCache;
+    const map={};
+    try{
+      const [m,tv]=await Promise.all([
+        tmdb("/watch/providers/movie",{watch_region:REGION}),
+        tmdb("/watch/providers/tv",{watch_region:REGION})
+      ]);
+      const all=[...(m.results||[]),...(tv.results||[])];
+      for(const label of SERVICES){
+        const rx=PROV_ALIAS[label];
+        const ids=[...new Set(all.filter(p=>rx.test(p.provider_name)).map(p=>p.provider_id))];
+        map[label]= ids.length?ids:(PROV_FALLBACK[label]||[]);
+      }
+    }catch(e){ for(const l of SERVICES) map[l]=PROV_FALLBACK[l]||[]; }
+    providerCache=map;return map;
+  }
+  function providerIds(map){
+    const ids=new Set();
+    st.svcs.forEach(s=>(map[s]||[]).forEach(i=>ids.add(i)));
+    return [...ids];
+  }
+  function svcLabelGuess(){
+    const a=[...st.svcs];
+    return a.length===1?a[0]:"On your services";
+  }
+  function hueOf(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h;}
+  function posterCSS(name){const h=hueOf(name||"x");
+    return `background:radial-gradient(130% 110% at 78% 8%, hsl(${(h+38)%360} 70% 55%), transparent 60%),
+      linear-gradient(155deg, hsl(${h} 62% 42%), hsl(${(h+28)%360} 58% 24%));`;}
+
+  /* one mapper for recs / spotlight-on-services / trending */
+  function mapResult(r,media,mode){
+    const title=r.title||r.name||"";
+    const yr=(r.release_date||r.first_air_date||"").slice(0,4);
+    const badge = mode==="trend" ? "Trending this week" : svcLabelGuess();
+    let hook=HOOKS.get(norm(title));
+    if(!hook) hook = (mode==="recs") ? (MOOD_HOOK[st.mood]||"a good one for tonight") : spotFrame();
+    return {n:title,y:yr||"",ty:media==="tv"?"series":"film",
+      poster:r.poster_path?IMG+r.poster_path:null,s:[badge],h:hook,vote:r.vote_average||0};
+  }
+
+  async function fetchLive(page){
+    const media=mediaFor(st.time);
+    const map=await loadProviders();
+    const ids=providerIds(map);
+    if(!ids.length) throw new Error("no providers");
+    const params=Object.assign(
+      {watch_region:REGION,with_watch_providers:ids.join("|"),
+       with_watch_monetization_types:"flatrate",page:page},
+      moodQuery(st.mood,media), runtimeFor(st.time), recencyFloor(st.mood,media)
+    );
+    if(media==="movie") params.include_adult="false";
+    const data=await tmdb("/discover/"+media,params);
+    st.totalPages=Math.min(data.total_pages||1,8);
+    return (data.results||[]).filter(r=>r.poster_path&&!watched.has(norm(r.title||r.name||""))).map(r=>mapResult(r,media,"recs"));
+  }
+  async function fetchTrending(){
+    const data=await tmdb("/trending/all/week",{});
+    return (data.results||[])
+      .filter(r=>r.poster_path && (r.media_type==="movie"||r.media_type==="tv"))
+      .slice(0,20).map(r=>mapResult(r, r.media_type==="tv"?"tv":"movie","trend"));
+  }
+
+  /* ---------- spotlight ---------- */
+  function spotFallback(){
+    const seed=["Severance","The Bear","Slow Horses","The Last of Us","Ted Lasso","Fleabag"];
+    const wk=weekIdx(); const order=[];
+    const add=c=>{ if(c&&!order.some(o=>o.n===c.n)) order.push({n:c.n,y:c.y,ty:c.ty,
+      poster:null,s:["Trending this week"],h:c.h,vote:0}); };
+    for(let i=0;i<seed.length;i++) add(T.find(t=>t.n===seed[(wk+i)%seed.length]));
+    T.forEach(add);
+    return order;
+  }
+  async function loadSpotlight(){
+    let item=null;
+    if(tmdbOn()){
+      try{ const list=await fetchTrending(); if(list.length){st.trendCache=list;item=list[0];} }catch(e){}
+    }
+    if(!item) item=spotFallback()[0];
+    st.spotItem=item;
+    $("#spotThumb").style.cssText = item.poster?`background-image:url('${item.poster}')`:posterCSS(item.n);
+    $("#spotTitle").textContent=item.n;
+    $("#spotTake").textContent = item.h || spotFrame();
+    $("#spotSkel").style.display="none";
+    $("#spotlight").hidden=false;
+  }
+
+  /* ---------- loader ---------- */
+  const CAPS=["Reading the room…","Seeing what’s actually on…","Lining up tonight’s one…"];
+  let capTimer=null;
+  function startLoader(){
+    $("#loader").classList.add("on");
+    let i=0; $("#lcap").textContent=CAPS[0];
+    capTimer=setInterval(()=>{ i=(i+1)%CAPS.length;
+      const c=$("#lcap"); c.style.opacity=0;
+      setTimeout(()=>{c.textContent=CAPS[i];c.style.opacity=1;},220);
+    },1100);
+  }
+  function stopLoader(){ clearInterval(capTimer); $("#loader").classList.remove("on"); }
+
+  /* ---------- local fallback ---------- */
+  function buildLocal(surprise){
+    const accept=ACCEPT[st.time]||["mid","film","quick","series"];
+    const inSvc=t=>t.s.some(x=>st.svcs.has(x));
+    let scored=CATALOGUE.filter(t=>inSvc(t)&&!watched.has(norm(t.n))).map(t=>{
+      const lenOk=t.L.some(b=>accept.includes(b));
+      const moodOk=surprise?true:t.m.includes(st.mood);
+      let sc=(moodOk?10:0)+(lenOk?6:0)+((!surprise&&t.m[0]===st.mood)?2:0)+Math.random()*3;
+      return {t,sc,lenOk,moodOk};
+    });
+    let strong=scored.filter(x=>x.moodOk&&x.lenOk);
+    if(strong.length<3){st.relaxed=true;strong=scored.filter(x=>x.moodOk||x.lenOk);}
+    if(!strong.length){st.relaxed=true;strong=scored;}
+    strong.sort((a,b)=>b.sc-a.sc);
+    return strong.map(x=>x.t);
+  }
+
+  /* ---------- flow ---------- */
+  function verdictLine(surprise){
+    if(surprise) return st.live?"Eyes closed — tonight’s pick is…":"Eyes closed, here’s tonight’s —";
+    const m={switch:"something easy",laugh:"a good laugh",grip:"something gripping",
+      moving:"something that lands",cosy:"a cosy, well-loved one",edge:"something tense"}[st.mood]||"a pick";
+    const t={quick:"a quick ~45",mid:"about 90 minutes",film:"a proper film",series:"a series to sink into"}[st.time]||"";
+    if(!st.live) return `Offline picks — ${m}, near enough your time —`;
+    return st.relaxed?`Closest we found — ${m} —`:`You wanted ${m}, ${t} —`;
+  }
+
+  function enter(){ $("#setup").style.display="none";$("#dock").style.display="none";
+    st.relaxed=false;st.idx=0;st.page=1;st.exhausted=false; startLoader(); }
+  function reveal(verdict){ stopLoader(); $("#verdict").textContent=verdict;
+    renderPick(); $("#result").classList.add("show"); window.scrollTo({top:0}); }
+
+  async function showResult(surprise){
+    hap(); enter();
+    const minWait=sleep(1150);
+    let q=[];
+    if(tmdbOn()){
+      try{
+        const saved=st.mood; if(surprise) st.mood=null;
+        q=await fetchLive(1);
+        st.mood=saved;
+        st.live=q.length>0;
+      }catch(e){ st.live=false; }
+    } else st.live=false;
+    if(!st.live) q=buildLocal(surprise);
+    await minWait;
+    st.queue=q;st.idx=0;
+    reveal(verdictLine(surprise));
+  }
+
+  async function showSpotlight(){
+    hap(); enter();
+    const minWait=sleep(1150);
+    let q=[],mode="local";
+    if(tmdbOn()){
+      try{
+        if(st.svcs.size>0){
+          const map=await loadProviders(); const ids=providerIds(map);
+          if(ids.length){
+            const yr=new Date().getFullYear()-7;
+            const data=await tmdb("/discover/movie",{watch_region:REGION,
+              with_watch_providers:ids.join("|"),with_watch_monetization_types:"flatrate",
+              sort_by:"popularity.desc",include_adult:"false","vote_count.gte":150,
+              "primary_release_date.gte":yr+"-01-01",page:1});
+            q=(data.results||[]).filter(r=>r.poster_path).map(r=>mapResult(r,"movie","svc"));
+            if(q.length) mode="svc";
+          }
+        }
+        if(!q.length){ q=(st.trendCache&&st.trendCache.length)?st.trendCache:await fetchTrending();
+          if(q.length) mode="trend"; }
+        st.live=q.length>0;
+      }catch(e){ st.live=false; }
+    } else st.live=false;
+    if(!st.live){ q=spotFallback(); mode="local"; }
+    await minWait;
+    st.queue=q;st.idx=0;
+    reveal(mode==="svc"?"Hot on your services right now —"
+      :mode==="trend"?"What everyone’s watching this week —":"This week’s standouts —");
+  }
+
+  function typeWord(t){return t.ty==="series"?"Series":"Film";}
+  function posterStyle(t){ return t.poster?`background-image:url('${t.poster}');`:posterCSS(t.n); }
+  function renderPick(){
+    const t=st.queue[st.idx];
+    if(!t){ noneLeft(); return; }
+    $("#another").style.display="";
+    $("#settle").style.display="";
+    $("#seenBtn").style.display="";
+    $("#pick").innerHTML=`
+      <div class="poster" style="${posterStyle(t)}">
+        <span class="badge-svc">${t.s[0]||"Streaming"}</span>
+        <span class="ptype">${typeWord(t)}${t.y?" · "+t.y:""}</span>
+        <span class="ptitle">${t.n}</span>
+      </div>
+      <div class="pmeta-row">
+        <span class="tag">${typeWord(t)}</span>${t.y?`<span class="tag">${t.y}</span>`:""}
+        <span class="tag">${t.s[0]||"on streaming"}</span>
+      </div>
+      <p class="why">Tonight: <b>${t.h}</b>.</p>`;
+    const alts=st.queue.slice(st.idx+1,st.idx+3);
+    const ml=$("#moreList");
+    ml.innerHTML=alts.map((a,i)=>`
+      <button class="alt" data-i="${st.idx+1+i}">
+        <span class="thumb" style="${posterStyle(a)}"></span>
+        <span><span class="at">${a.n}</span><span class="as">${typeWord(a)}${a.y?" · "+a.y:""} · ${a.s[0]||""}</span></span>
+        <span class="go-i">›</span>
+      </button>`).join("");
+    ml.querySelectorAll(".alt").forEach(b=>b.onclick=()=>{
+      hap();st.idx=parseInt(b.dataset.i,10);
+      $("#moreList").classList.remove("show");$("#moreBtn").textContent="Show 2 more options ▾";
+      renderPick();window.scrollTo({top:0,behavior:"smooth"});
+    });
+    $("#moreBtn").style.display= alts.length?"block":"none";
+  }
+  function noneLeft(){
+    $("#pick").innerHTML=`<div style="padding:34px 22px;text-align:center">
+      <div style="font-family:var(--serif);font-size:21px;margin-bottom:8px">That’s the shortlist.</div>
+      <div style="color:var(--ink-soft);font-size:14.5px;line-height:1.5">
+        Loosen the vibe or add a service — your food’s not getting warmer.</div></div>`;
+    $("#moreBtn").style.display="none";
+    $("#another").style.display="none";
+    $("#settle").style.display="none";
+    $("#seenBtn").style.display="none";
+  }
+  async function topUp(){
+    if(st.live && !st.exhausted && st.queue.length && st.queue[0].s[0]!=="Trending this week"){
+      st.page++;
+      try{
+        const more=await fetchLive(st.page);
+        const fresh=more.filter(x=>!st.queue.some(q=>norm(q.n)===norm(x.n)));
+        if(fresh.length){ st.queue=st.queue.concat(fresh); return true; }
+        st.exhausted=true;
+      }catch(e){ st.exhausted=true; }
+    }
+    const extra=buildLocal(false).filter(x=>!st.queue.some(q=>norm(q.n)===norm(x.n)));
+    if(extra.length){ st.queue=st.queue.concat(extra); return true; }
+    return false;
+  }
+
+  $("#another").onclick=async ()=>{
+    hap();
+    if(st.idx>=st.queue.length-3){ await topUp(); }
+    if(st.idx+1>=st.queue.length){ noneLeft(); return; }
+    st.idx++; renderPick(); window.scrollTo({top:0,behavior:"smooth"});
+  };
+  function showSettled(t){
+    $("#settBg").style.backgroundImage=t.poster?`url('${t.poster}')`:"none";
+    $("#settTitle").textContent=t.n;
+    $("#settHook").textContent=t.h;
+    const el=$("#settled"); el.hidden=false; el.classList.add("show");
+  }
+  $("#settle").onclick=()=>{
+    hap();
+    const t=st.queue[st.idx]; if(!t) return;
+    showSettled(t);
+  };
+  $("#settRestart").onclick=()=>{
+    hap();
+    const el=$("#settled"); el.classList.remove("show"); el.hidden=true;
+    $("#back").click();
+  };
+  $("#moreBtn").onclick=()=>{
+    const l=$("#moreList"),open=l.classList.toggle("show");
+    $("#moreBtn").textContent=open?"Hide options ▴":"Show 2 more options ▾";
+  };
+  $("#back").onclick=()=>{
+    hap();
+    const s=$("#settled"); s.classList.remove("show"); s.hidden=true;
+    $("#result").classList.remove("show");
+    $("#setup").style.display="block";$("#dock").style.display="block";
+    $("#settle").disabled=false;$("#settle").textContent="That’s the one";
+    $("#settle").style.background="";$("#settle").style.color="";$("#settle").style.borderColor="";
+    $("#moreList").classList.remove("show");$("#moreBtn").textContent="Show 2 more options ▾";
+    window.scrollTo({top:0});
+  };
+
+  $("#seenBtn").onclick=async()=>{
+    hap();
+    const t=st.queue[st.idx];
+    if(t) watched.add(norm(t.n));
+    if(st.idx>=st.queue.length-3){ await topUp(); }
+    if(st.idx+1>=st.queue.length){ noneLeft(); return; }
+    st.idx++; renderPick(); window.scrollTo({top:0,behavior:"smooth"});
+  };
+  goBtn.onclick=()=>{ if(!goBtn.disabled) showResult(false); };
+  $("#surprise").onclick=()=>{ if(st.svcs.size>0) showResult(true);
+    else goBtn.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},
+      {transform:"translateX(6px)"},{transform:"translateX(0)"}],{duration:260}); };
+  $("#spotlight").onclick=showSpotlight;
+
+  refreshGo();
+  loadSpotlight();
+})();
+</script>
+</body>
+</html>
