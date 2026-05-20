@@ -639,7 +639,7 @@
     if(surprise) return st.live?"Eyes closed — tonight’s pick is…":"Eyes closed, here’s tonight’s —";
     const m={switch:"something easy",laugh:"a good laugh",grip:"something gripping",
       moving:"something that lands",cosy:"a cosy, well-loved one",edge:"something tense"}[st.mood]||"a pick";
-    const t={quick:"a quick ~45",mid:"about 90 minutes",film:"a proper film",series:"a series to sink into"}[st.time]||"";
+    const t={quick:"a quick ~45 mins",mid:"about 90 minutes",film:"a proper film",series:"a series to sink into"}[st.time]||"";
     if(!st.live) return `Offline picks — ${m}, near enough your time —`;
     return st.relaxed?`Closest we found — ${m} —`:`You wanted ${m}, ${t} —`;
   }
