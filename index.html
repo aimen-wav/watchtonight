@@ -47,7 +47,7 @@
     background:radial-gradient(900px 500px at 78% -8%, color-mix(in srgb,var(--accent) 16%,transparent), transparent 60%),
       radial-gradient(700px 480px at 8% 108%, color-mix(in srgb,var(--dusk) 14%,transparent), transparent 62%)}
   .wrap>*{position:relative;z-index:1}
-
+ 
   .top{margin:6px 2px 22px}
   .kicker{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--accent-deep);
     text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:10px}
@@ -58,7 +58,7 @@
   h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.12;letter-spacing:-.02em;margin-bottom:9px}
   h1 em{font-style:italic;color:var(--accent-deep)}
   .sub{color:var(--ink-soft);font-size:15.5px;line-height:1.45;max-width:34ch}
-
+ 
   /* ---- spotlight ---- */
   .spot{display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;
     background:var(--card);border:1px solid var(--line);border-radius:18px;padding:11px 13px;
@@ -82,12 +82,12 @@
   @keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
   .spot.skel .spot-thumb{background:linear-gradient(90deg,var(--bg-2),var(--line),var(--bg-2));
     background-size:200% 100%;animation:sh 1.2s linear infinite}
-
+ 
   .group{margin-bottom:24px;animation:rise .6s cubic-bezier(.2,.7,.2,1) backwards}
   .group:nth-of-type(1){animation-delay:.05s}.group:nth-of-type(2){animation-delay:.12s}.group:nth-of-type(3){animation-delay:.19s}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   .label{font-size:13px;font-weight:650;color:var(--ink-soft);letter-spacing:.02em;margin:0 4px 11px;display:block}
-
+ 
   .moods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .mood{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:15px;text-align:left;
     cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s,box-shadow .25s,background .2s;
@@ -99,7 +99,7 @@
   .mood[aria-pressed=true]{border-color:transparent;background:var(--accent);color:#fff;
     box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 42%,transparent);transform:translateY(-1px)}
   .mood[aria-pressed=true] .d{color:rgba(255,255,255,.78)}
-
+ 
   .seg{display:flex;background:var(--bg-2);border-radius:15px;padding:4px;gap:3px}
   .seg button{flex:1;border:0;background:transparent;color:var(--ink-soft);font-family:var(--sans);
     font-size:13.5px;font-weight:600;padding:11px 6px;border-radius:11px;cursor:pointer;
@@ -107,14 +107,14 @@
   .seg button:active{transform:scale(.95)}
   .seg button[aria-pressed=true]{background:var(--card);color:var(--ink);
     box-shadow:0 1px 2px rgba(30,27,23,.06),0 4px 12px rgba(30,27,23,.08)}
-
+ 
   .chips{display:flex;flex-wrap:wrap;gap:9px}
   .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);
     font-size:14px;font-weight:570;padding:10px 15px;border-radius:999px;cursor:pointer;
     transition:transform .15s,background .18s,border-color .18s,color .18s}
   .chip:active{transform:scale(.94)}
   .chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-
+ 
   .dock{position:fixed;left:0;right:0;bottom:0;z-index:20;
     padding:14px 20px calc(16px + env(safe-area-inset-bottom));
     background:linear-gradient(to top,var(--bg) 62%,transparent);backdrop-filter:blur(2px)}
@@ -128,7 +128,7 @@
   .surprise{background:none;border:0;color:var(--ink-soft);font-family:var(--sans);font-size:13.5px;
     font-weight:560;cursor:pointer;padding:4px;align-self:center}
   .surprise u{text-decoration-color:var(--ink-faint);text-underline-offset:3px}
-
+ 
   /* ---------- LOADER ---------- */
   #loader{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;
     align-items:center;justify-content:center;gap:26px;background:var(--bg);
@@ -171,7 +171,7 @@
   @keyframes flick{0%,100%{opacity:.25}45%{opacity:.55}70%{opacity:.18}}
   .lcap{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink-soft);
     min-height:22px;text-align:center;transition:opacity .25s}
-
+ 
   /* ---------- RESULT ---------- */
   .result{display:none}
   .result.show{display:block;animation:tune .55s cubic-bezier(.2,.7,.2,1)}
@@ -215,7 +215,7 @@
     font-size:13px;font-weight:500;cursor:pointer;padding:10px 4px;margin-top:4px;
     letter-spacing:.01em;transition:color .15s}
   .seen-btn:active{color:var(--ink-soft)}
-
+ 
   /* ---------- SETTLED (decision made) ---------- */
   #settled{position:fixed;inset:0;z-index:55;display:none;flex-direction:column;
     align-items:center;justify-content:center;overflow:hidden;background:var(--bg);
@@ -249,14 +249,14 @@
 </head>
 <body>
 <div class="wrap">
-
+ 
   <section id="setup">
     <div class="top">
       <div class="kicker"><span class="steam"><i></i><i></i><i></i></span> Dinner’s getting cold</div>
       <h1>Three taps.<br>Tonight, <em>decided</em>.</h1>
       <p class="sub">Still scrolling while dinner gets cold? Tell us the mood — we’ll find tonight’s pick for you both.</p>
     </div>
-
+ 
     <div id="spotSkel" class="spot skel">
       <span class="spot-thumb"></span>
       <span class="spot-txt"><span class="sk sk1"></span><span class="sk sk2"></span></span>
@@ -270,7 +270,7 @@
       </span>
       <span class="spot-go">›</span>
     </button>
-
+ 
     <div class="group">
       <span class="label">What are you both in the mood for?</span>
       <div class="moods" id="moods"></div>
@@ -285,7 +285,7 @@
     </div>
     <p class="footnote" style="margin-top:6px">Pick streaming services you have.</p>
   </section>
-
+ 
   <section id="loader">
     <div class="tv-wrap">
       <div class="tv-ant"><span class="al"></span><span class="ar"></span></div>
@@ -297,7 +297,7 @@
     </div>
     <div class="lcap" id="lcap">Reading the room…</div>
   </section>
-
+ 
   <section id="result" class="result">
     <button class="back" id="back">‹&nbsp; Change the vibe</button>
     <p class="verdict" id="verdict"></p>
@@ -312,14 +312,14 @@
     <p class="footnote" id="foot">Availability is live for the UK and can still shift — open it in the app to be sure.</p>
     <p class="footnote" style="margin-top:6px">Data provided by <a href="https://www.themoviedb.org" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-decoration-color:currentColor;text-underline-offset:2px">TMDB</a>. Not endorsed or certified by TMDB.</p>
   </section>
-
+ 
   <div class="dock" id="dock">
     <div class="dock-in">
       <button class="go" id="go" disabled>Pick something →</button>
       <button class="surprise" id="surprise">or just <u>surprise us</u></button>
     </div>
   </div>
-
+ 
   <div id="settled" hidden>
     <div class="sett-bg" id="settBg"></div>
     <div class="sett-scrim"></div>
@@ -332,11 +332,11 @@
     <button class="sett-restart" id="settRestart">Start fresh →</button>
   </div>
 </div>
-
+ 
 <script>
 (function(){
   "use strict";
-
+ 
   /* ============================================================
      TMDB SETUP — paste your free v3 API key between the quotes.
      https://www.themoviedb.org/settings/api  (the short "API Key
@@ -344,12 +344,12 @@
      No key? The app still runs on built-in picks.
      ============================================================ */
   const TMDB_KEY = "286f439157e1c64a21e9e1c0e6434e85";
-
+ 
   const TMDB="https://api.themoviedb.org/3";
   const IMG="https://image.tmdb.org/t/p/w500";
   const REGION="GB";
   const tmdbOn=()=>!!TMDB_KEY;
-
+ 
   const MOODS=[
     {k:"switch",e:"🛋️",t:"Switch off",d:"easy, no homework"},
     {k:"laugh", e:"😄",t:"Make us laugh",d:"light & funny"},
@@ -367,7 +367,7 @@
     "Netflix":/netflix/i,"Prime Video":/amazon prime|prime video/i,"Disney+":/disney/i,
     "Apple TV+":/apple tv/i,"Max / HBO":/^now|sky|hbo|^max/i,"Paramount+":/paramount/i,"Hulu":/hulu/i
   };
-
+ 
   function moodQuery(mood, media){
     const tv=media==="tv";
     const G={
@@ -403,7 +403,7 @@
     const d=(now-back)+"-01-01";
     return media==="tv"?{"first_air_date.gte":d}:{"primary_release_date.gte":d};
   }
-
+ 
   const T=[
     {n:"Stranger Things",y:2016,ty:"series",L:["series"],s:["Netflix"],m:["grip","edge","switch"],h:"a small-town mystery you’ll both want to keep going on"},
     {n:"The Night Agent",y:2023,ty:"series",L:["series"],s:["Netflix"],m:["grip"],h:"a fast conspiracy thriller that makes ‘one more’ inevitable"},
@@ -459,14 +459,14 @@
     "Topping the charts in the UK right now.","The one your group chat won’t shut up about."];
   const weekIdx=()=>Math.floor(Date.now()/6048e5);
   const spotFrame=()=>SPOT_FRAMES[weekIdx()%SPOT_FRAMES.length];
-
+ 
   const st={mood:null,time:null,svcs:new Set(),queue:[],idx:0,relaxed:false,
     live:false,page:1,exhausted:false,trendCache:null};
   const watched=new Set(); // titles marked seen this session — persists across back/forward
   const $=s=>document.querySelector(s);
   function hap(){ if(navigator.vibrate) try{navigator.vibrate(8)}catch(e){} }
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
+ 
   /* ---------- setup UI ---------- */
   const moodWrap=$("#moods");
   MOODS.forEach(o=>{
@@ -504,7 +504,7 @@
     goBtn.classList.toggle("ready",!!(st.mood&&st.time&&ok));
     goBtn.textContent= ok ? "Pick something →" : "Add a service first";
   }
-
+ 
   /* ---------- TMDB ---------- */
   let providerCache=null;
   async function tmdb(path,params){
@@ -546,7 +546,7 @@
   function posterCSS(name){const h=hueOf(name||"x");
     return `background:radial-gradient(130% 110% at 78% 8%, hsl(${(h+38)%360} 70% 55%), transparent 60%),
       linear-gradient(155deg, hsl(${h} 62% 42%), hsl(${(h+28)%360} 58% 24%));`;}
-
+ 
   /* one mapper for recs / spotlight-on-services / trending */
   function mapResult(r,media,mode){
     const title=r.title||r.name||"";
@@ -557,7 +557,7 @@
     return {n:title,y:yr||"",ty:media==="tv"?"series":"film",
       poster:r.poster_path?IMG+r.poster_path:null,s:[badge],h:hook,vote:r.vote_average||0};
   }
-
+ 
   async function fetchLive(page){
     const media=mediaFor(st.time);
     const map=await loadProviders();
@@ -579,7 +579,7 @@
       .filter(r=>r.poster_path && (r.media_type==="movie"||r.media_type==="tv"))
       .slice(0,20).map(r=>mapResult(r, r.media_type==="tv"?"tv":"movie","trend"));
   }
-
+ 
   /* ---------- spotlight ---------- */
   function spotFallback(){
     const seed=["Severance","The Bear","Slow Horses","The Last of Us","Ted Lasso","Fleabag"];
@@ -603,7 +603,7 @@
     $("#spotSkel").style.display="none";
     $("#spotlight").hidden=false;
   }
-
+ 
   /* ---------- loader ---------- */
   const CAPS=["Reading the room…","Seeing what’s actually on…","Lining up tonight’s one…"];
   let capTimer=null;
@@ -616,7 +616,7 @@
     },1100);
   }
   function stopLoader(){ clearInterval(capTimer); $("#loader").classList.remove("on"); }
-
+ 
   /* ---------- local fallback ---------- */
   function buildLocal(surprise){
     const accept=ACCEPT[st.time]||["mid","film","quick","series"];
@@ -633,7 +633,7 @@
     strong.sort((a,b)=>b.sc-a.sc);
     return strong.map(x=>x.t);
   }
-
+ 
   /* ---------- flow ---------- */
   function verdictLine(surprise){
     if(surprise) return st.live?"Eyes closed — tonight’s pick is…":"Eyes closed, here’s tonight’s —";
@@ -643,12 +643,12 @@
     if(!st.live) return `Offline picks — ${m}, near enough your time —`;
     return st.relaxed?`Closest we found — ${m} —`:`You wanted ${m}, ${t} —`;
   }
-
+ 
   function enter(){ $("#setup").style.display="none";$("#dock").style.display="none";
     st.relaxed=false;st.idx=0;st.page=1;st.exhausted=false; startLoader(); }
   function reveal(verdict){ stopLoader(); $("#verdict").textContent=verdict;
     renderPick(); $("#result").classList.add("show"); window.scrollTo({top:0}); }
-
+ 
   async function showResult(surprise){
     hap(); enter();
     const minWait=sleep(1150);
@@ -666,7 +666,7 @@
     st.queue=q;st.idx=0;
     reveal(verdictLine(surprise));
   }
-
+ 
   async function showSpotlight(){
     hap(); enter();
     const minWait=sleep(1150);
@@ -696,7 +696,7 @@
     reveal(mode==="svc"?"Hot on your services right now —"
       :mode==="trend"?"What everyone’s watching this week —":"This week’s standouts —");
   }
-
+ 
   function typeWord(t){return t.ty==="series"?"Series":"Film";}
   function posterStyle(t){ return t.poster?`background-image:url('${t.poster}');`:posterCSS(t.n); }
   function renderPick(){
@@ -755,7 +755,7 @@
     if(extra.length){ st.queue=st.queue.concat(extra); return true; }
     return false;
   }
-
+ 
   $("#another").onclick=async ()=>{
     hap();
     if(st.idx>=st.queue.length-3){ await topUp(); }
@@ -792,7 +792,7 @@
     $("#moreList").classList.remove("show");$("#moreBtn").textContent="Show 2 more options ▾";
     window.scrollTo({top:0});
   };
-
+ 
   $("#seenBtn").onclick=async()=>{
     hap();
     const t=st.queue[st.idx];
@@ -806,10 +806,11 @@
     else goBtn.animate([{transform:"translateX(0)"},{transform:"translateX(-6px)"},
       {transform:"translateX(6px)"},{transform:"translateX(0)"}],{duration:260}); };
   $("#spotlight").onclick=showSpotlight;
-
+ 
   refreshGo();
   loadSpotlight();
 })();
 </script>
 </body>
 </html>
+ 
